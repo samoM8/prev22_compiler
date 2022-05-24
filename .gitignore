@@ -15,6 +15,7 @@ gen/
 
 # Package Files #
 *.jar
+!antlr-4.9.3-complete.jar
 *.war
 *.nar
 *.ear
