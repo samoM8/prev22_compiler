@@ -1,0 +1,75 @@
+# Expected
+# K
+
+var prices : [5] int
+var weights : [5] int
+
+fun knapsack(weights: ^[5]int, prices: ^[5]int, W: int, ix: int) : int = {
+    if (ix == 0 | W == 0) then {
+        result = 0;
+    } else {
+        if (weights^[ix - 1] > W) then {
+            result = knapsack(weights, prices, W, ix-1);
+        } else {
+            ixIncluded = prices^[ix-1] + knapsack(weights, prices, W - weights^[ix-1], ix-1);
+            ixNotIncluded = knapsack(weights, prices, W, ix-1);
+            result = max(ixIncluded, ixNotIncluded);
+        };
+    };
+    result;
+} where {
+    var result: int
+    var ixIncluded: int
+    var ixNotIncluded: int
+}
+
+fun main() : int = {
+    prices[0] = 15;
+    prices[1] = 25;
+    prices[2] = 30;
+    prices[3] = 10;
+    prices[4] = 20;
+
+    weights[0] = 25;
+    weights[1] = 15;
+    weights[2] = 20;
+    weights[3] = 10;
+    weights[4] = 15;
+
+    W = 50;
+    ix = 5;
+    result = knapsack(^weights, ^prices, W, ix);
+    putInt(result);
+    putChar(10);
+    0;
+} where {
+    var W : int
+    var ix : int
+    var result : int
+}
+
+fun max(a: int, b: int): int = {
+    if (a > b) then
+        return = a
+    else
+        return = b
+    ;
+    return;
+} where {
+    var return: int
+}
+
+fun putChar(c: int): void
+
+fun putInt(x : int) : void = {
+    if x < 0
+    then {
+        x = -x;
+        putChar(('-' : int));
+    }
+    else none;
+    if x/10 > 0
+    then putInt(x/10)
+    else none;
+    putChar(x%10 + ('0': int));
+}

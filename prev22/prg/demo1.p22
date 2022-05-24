@@ -1,0 +1,18 @@
+# Expected:
+# aA
+
+var globalZnak: char
+
+fun main() : int = {
+	localZnak = 'a';
+	putChar((localZnak : int));
+
+	globalZnak = 'A';
+	putChar((globalZnak : int));
+	putChar(10);
+	0;
+} where {
+	var localZnak: char
+}
+
+fun putChar(c : int) : void

@@ -1,0 +1,20 @@
+# Expected: Y
+
+fun main(): int = {
+    putChar(fibonacci(11));
+    putChar(10);
+    0;
+}
+
+fun fibonacci(n: int) : int = {
+    if (n <= 1) then
+        res = n
+    else
+        res = fibonacci(n-1) + fibonacci(n-2)
+    ;
+    res;
+} where {
+    var res : int
+}
+
+fun putChar(a: int): void

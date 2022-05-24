@@ -1,0 +1,26 @@
+# Expected:
+# Testiranje stringov!
+
+var str: ^char
+
+fun main() : void = {
+    str = "Testiranje stringa";
+    putString(str);
+    newLine();
+}
+
+fun putChar(c : int) : void
+fun newLine() : void = putChar(10)
+fun putString(s : ^char) : int = {
+	count = 0;
+	x = (s : ^int);
+	while x^ != 0 do {
+		putChar(x^);
+		x = ((x : int) + 8 : ^int);
+		count = count + 1;
+	};
+	count;
+} where {
+	var x : ^int
+	var count : int
+}

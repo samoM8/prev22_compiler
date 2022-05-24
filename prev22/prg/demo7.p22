@@ -1,0 +1,12 @@
+
+fun main() : int = {
+	c = getChar();
+	putChar(c);
+	putChar(10);
+	0;
+} where {
+	var c : int
+}
+
+fun putChar(c: int): void
+fun getChar(): int

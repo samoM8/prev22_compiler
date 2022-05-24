@@ -1,0 +1,24 @@
+# Expected:
+# ABC
+
+fun main() : int = {
+    putChar(fun1(55, 56, 57));
+    putChar(10);
+    0;
+}
+
+fun fun1(a: int, b: int, c: int) : int = {
+	putChar(fun2(a, b));
+	c + 10;
+}
+
+fun fun2(a: int, b: int) : int = {
+	putChar(fun3(a));
+	b + 10;
+}
+
+fun fun3(a: int) : int = {
+	a + 10;
+}
+
+fun putChar(c : int) : void

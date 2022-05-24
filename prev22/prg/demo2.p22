@@ -1,0 +1,26 @@
+# Expected:
+# T
+# F
+
+fun main(): int = {
+
+    if 0 < 1  then
+        putChar(('T' : int))
+    else
+        putChar(('F' : int))
+    ;
+
+    putChar(10);
+
+    if 0 > 1 then
+        putChar(('T' : int))
+    else
+        putChar(('F' : int))
+    ;
+
+    putChar(10);
+
+    0;
+}
+
+fun putChar(c : int) : void
