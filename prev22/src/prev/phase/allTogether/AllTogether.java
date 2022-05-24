@@ -116,73 +116,73 @@ public class AllTogether extends Phase {
         return instrs;
     }
 
-    private void epilogue(Code code) {
-        List<AsmInstr> epilogue = new LinkedList<>();
-
-        epilogue.add(new AsmLABEL(code.frame.label));
-
-        //Every function can only be actively called 8-times
-        // add 1 to function called
-//        epilogue.add(new AsmOPER(String.format("\t\tLDA\t$0,%s", code.frame.label.name + "Count"), null, null, null));
-//        epilogue.add(new AsmOPER("\t\tLDO\t$1,$0,0", null, null, null));
-//        epilogue.add(new AsmOPER("\t\tADD\t$1,$1,1", null, null, null));
-//        // check if more than 8
-//        epilogue.add(new AsmOPER("\t\tCMP\t$2,$1,8", null, null, null));
-//        epilogue.add(new AsmOPER("\t\tZSP\t$2,$2,1", null, null, null));
-//        epilogue.add(new AsmOPER("\t\tBP\t$2,over", null, null, null));
-//        epilogue.add(new AsmOPER("\t\tSTO\t$1,$0,0", null, null, null));
-//        epilogue.add(new AsmOPER("\t\tJMP\tgood", null, null, null));
-//        epilogue.add(new AsmOPER("over\t\tTRAP\t 0,Halt,0", null, null, null));
-
-        // store FP
-        epilogue.addAll(loadConstToReg(0, -(code.frame.locsSize + 8)));
-        epilogue.add(new AsmOPER("good\t\tSTO $253,$254,$0", null, null, null));
-        // set FP to SP / move FP down
-        epilogue.add(new AsmOPER("ADD $253,$254,0", null, null, null));
-        // load call frame size
-        epilogue.addAll(loadConstToReg(0, -code.frame.size));
-        // move SP down
-        epilogue.add(new AsmOPER("ADD $254,$254,$0", null, null, null));
-        // get return address
-        epilogue.add(new AsmOPER("GET $0,rJ", null, null, null));
-        // store return address
-        epilogue.addAll(loadConstToReg(1, -(code.frame.locsSize + 16)));
-        epilogue.add(new AsmOPER("STO $0,$253,$1", null, null, null));
-        // jump into function
-        epilogue.add(new AsmOPER("JMP " + code.entryLabel.name, null, null, null));
-
-        code.instrs.addAll(0, epilogue);
-    }
-
     private void prologue(Code code) {
         List<AsmInstr> prologue = new LinkedList<>();
 
-        prologue.add(new AsmLABEL(code.exitLabel));
+        prologue.add(new AsmLABEL(code.frame.label));
+
+        //Every function can only be actively called 8-times
+        // add 1 to function called
+//        prologue.add(new AsmOPER(String.format("\t\tLDA\t$0,%s", code.frame.label.name + "Count"), null, null, null));
+//        prologue.add(new AsmOPER("\t\tLDO\t$1,$0,0", null, null, null));
+//        prologue.add(new AsmOPER("\t\tADD\t$1,$1,1", null, null, null));
+//        // check if more than 8
+//        prologue.add(new AsmOPER("\t\tCMP\t$2,$1,8", null, null, null));
+//        prologue.add(new AsmOPER("\t\tZSP\t$2,$2,1", null, null, null));
+//        prologue.add(new AsmOPER("\t\tBP\t$2,over", null, null, null));
+//        prologue.add(new AsmOPER("\t\tSTO\t$1,$0,0", null, null, null));
+//        prologue.add(new AsmOPER("\t\tJMP\tgood", null, null, null)); // set next instr to good
+//        prologue.add(new AsmOPER("over\t\tTRAP\t 0,Halt,0", null, null, null));
+
+        // store FP
+        prologue.addAll(loadConstToReg(0, -(code.frame.locsSize + 8)));
+        prologue.add(new AsmOPER("\t\tSTO $253,$254,$0", null, null, null));
+        // set FP to SP / move FP down
+        prologue.add(new AsmOPER("ADD $253,$254,0", null, null, null));
+        // load call frame size
+        prologue.addAll(loadConstToReg(0, -code.frame.size));
+        // move SP down
+        prologue.add(new AsmOPER("ADD $254,$254,$0", null, null, null));
+        // get return address
+        prologue.add(new AsmOPER("GET $0,rJ", null, null, null));
+        // store return address
+        prologue.addAll(loadConstToReg(1, -(code.frame.locsSize + 16)));
+        prologue.add(new AsmOPER("STO $0,$253,$1", null, null, null));
+        // jump into function
+        prologue.add(new AsmOPER("JMP " + code.entryLabel.name, null, null, null));
+
+        code.instrs.addAll(0, prologue);
+    }
+
+    private void epilogue(Code code) {
+        List<AsmInstr> epilogue = new LinkedList<>();
+
+        epilogue.add(new AsmLABEL(code.exitLabel));
 
         // extra work
 //        Every function can only be actively called 8-times
-//        prologue.add(new AsmOPER(String.format("\t\tLDA\t$0,%s", code.frame.label.name + "Count"), null, null, null));
-//        prologue.add(new AsmOPER("\t\tLDO\t$1,$0,0", null, null, null));
-//        prologue.add(new AsmOPER("\t\tSUB\t$1,$1,1", null, null, null));
+//        epilogue.add(new AsmOPER(String.format("\t\tLDA\t$0,%s", code.frame.label.name + "Count"), null, null, null));
+//        epilogue.add(new AsmOPER("\t\tLDO\t$1,$0,0", null, null, null));
+//        epilogue.add(new AsmOPER("\t\tSUB\t$1,$1,1", null, null, null));
 
         // store return value on location that FP points to
         Vector<MemTemp> uses = new Vector<>();
         uses.add(code.frame.RV);
-        prologue.add(new AsmOPER("STO `s0,$253,0", uses, null, null));
+        epilogue.add(new AsmOPER("STO `s0,$253,0", uses, null, null));
         // restore return address
-        prologue.addAll(loadConstToReg(1, -(code.frame.locsSize + 16)));
-        prologue.add(new AsmOPER("LDO $0,$253,$1", null, null, null));
-        prologue.add(new AsmOPER("PUT rJ,$0", null, null, null));
+        epilogue.addAll(loadConstToReg(1, -(code.frame.locsSize + 16)));
+        epilogue.add(new AsmOPER("LDO $0,$253,$1", null, null, null));
+        epilogue.add(new AsmOPER("PUT rJ,$0", null, null, null));
         // set stack pointer to frame pointer
-        prologue.add(new AsmOPER("ADD $254,$253,0", null, null, null));
+        epilogue.add(new AsmOPER("ADD $254,$253,0", null, null, null));
         // set old frame pointer
-        prologue.addAll(loadConstToReg(0, -(code.frame.locsSize + 8)));
+        epilogue.addAll(loadConstToReg(0, -(code.frame.locsSize + 8)));
         // it doesn't matter if I use SP($254) or FP($253) because they are the same at this moment
-        prologue.add(new AsmOPER("LDO $253,$254,$0", null, null, null));
+        epilogue.add(new AsmOPER("LDO $253,$254,$0", null, null, null));
 
-        prologue.add(new AsmOPER(String.format("POP %d,0", nregs), null, null, null));
+        epilogue.add(new AsmOPER(String.format("POP %d,0", nregs), null, null, null));
 
-        code.instrs.addAll(prologue);
+        code.instrs.addAll(epilogue);
     }
 
     // adds epilogue and prologue to every code fragment
@@ -192,8 +192,8 @@ public class AllTogether extends Phase {
                     code.frame.label.name.equals("_new") || code.frame.label.name.equals("_del"))
                 continue;
 
-            epilogue(code);
             prologue(code);
+            epilogue(code);
         }
     }
 
