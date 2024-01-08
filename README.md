@@ -1,5 +1,5 @@
 # Prev22 Compiler
-A compiler made for made-up programming language prev22!
+A compiler made for programming language prev22 as part of undergraduate course Compilers at [Faculty of Computer and Information science](https://www.fri.uni-lj.si/en) in Ljubljana!
 
 # How to run
     $ cd prev22
